@@ -17,7 +17,7 @@ Board will be a matrix of 8x8 size. That will contain 32 pieces initially.
 
 Board
 
-top to down: 0 to 7  (X: represent row)
+top to down: 0 to 7  (X: represent row) (white is at top and black is at bottom)
 left to right: 0 to 7 (Y: represent column)
 
 Game {
@@ -26,3 +26,6 @@ Game {
 
 How do we play:
 1. set the board with the pieces.
+2. Until check mate or stalemate: 
+    1. Each player moves one piece, to any valid position.
+    2. If opposite player's piece is at that position, he can capture the piece.

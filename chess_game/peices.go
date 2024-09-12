@@ -1,28 +1,65 @@
 package main
 
 type Piece interface {
-	move(int, int) bool
+	move([9][9]Piece, int, int) bool
+	display()
+	isWhite() bool
 }
 
-type Pawn struct {
-	X int
-	Y int
-}
-
-func (p *Pawn) move(a, b int) bool {
-
-	// check if can move to (a, b)
-	// i need the details of board to check
+// check if row ith row is clear from a to b column
+func isRowClear(board [9][9]Piece, a, b, ith int) bool {
+	for i := a; i <= b; i++ {
+		if board[ith][i] != nil {
+			return false
+		}
+	}
 	return true
 }
 
-type Queen struct {
-	X int
-	Y int
-}
-
-func (q *Queen) move(a, b int) bool {
-
-	// check if can move
+// check if column ith column is clear from a to b row
+func isColumnClear(board [9][9]Piece, a, b, ith int) bool {
+	for i := a; i <= b; i++ {
+		if board[i][ith] != nil {
+			return false
+		}
+	}
 	return true
 }
+
+// check if diagonal from x, y to a, b is clear
+func isDiagonalClear(board [9][9]Piece, x, y, a, b int) bool {
+	if x < a {
+		for i, j := x, y; i <= a && j >= b; i, j = i+1, j-1 {
+			if board[i][j] != nil {
+				return false
+			}
+		}
+	} else {
+		for i, j := x, y; i >= a && j <= b; i, j = i-1, j+1 {
+			if board[i][j] != nil {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// check if diagonal from x, y to a, b is clear
+func isDiagonalClear2(board [9][9]Piece, x, y, a, b int) bool {
+	if x < a {
+		for i, j := x, y; i <= a && j <= b; i, j = i+1, j+1 {
+			if board[i][j] != nil {
+				return false
+			}
+		}
+	} else {
+		for i, j := x, y; i >= a && j >= b; i, j = i-1, j-1 {
+			if board[i][j] != nil {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+// check if diagonal from x, y to a, b is clear
