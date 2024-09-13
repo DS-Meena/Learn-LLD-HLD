@@ -39,6 +39,8 @@ func (p *Pawn) move(board [9][9]Piece, a, b int) bool {
 	board[p.X][p.Y] = nil
 	p.X = a
 	p.Y = b
+
+	// add promotion logic
 	return true
 }
 

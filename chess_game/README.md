@@ -29,5 +29,11 @@ How do we play:
 2. Until check mate or stalemate: 
     1. Each player moves one piece, to any valid position.
     2. If opposite player's piece is at that position, he can capture the piece.
+    3. Check if can move using valid moves. Unique for each piece
+    4. Promotion logic for pawn
+    5. King should not be in check, after you move the piece.
+3. Game finishes.
+
+Few more methods can be implemented, but I think for 1 hour interview this much code should be enough.
 
 [You tube video](https://www.youtube.com/watch?v=kk6QkWxz5jM&list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW&index=22)
