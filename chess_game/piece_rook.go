@@ -2,13 +2,13 @@ package main
 
 import "fmt"
 
-type Queen struct {
+type Rook struct {
 	X     int
 	Y     int
 	White bool
 }
 
-func (q *Queen) move(board [9][9]Piece, a, b int) bool {
+func (q *Rook) move(board [9][9]Piece, a, b int) bool {
 
 	// other piece should not be present in path
 	oldValue := board[a][b]
@@ -22,17 +22,8 @@ func (q *Queen) move(board [9][9]Piece, a, b int) bool {
 		board[a][b] = oldValue
 		return false
 	}
-	if q.X-a == q.Y-b && !isDiagonalClear(board, q.X, q.Y, a, b) {
-		board[a][b] = oldValue
-		return false
-	}
-	if q.X+a == q.Y+b && !isDiagonalClear2(board, q.X, q.Y, a, b) {
-		board[a][b] = oldValue
-		return false
-	}
-
-	// if (a, b) is outside of attacking range of queen
-	if q.X != a && q.Y != b && q.X-a != q.Y-b && q.X+a != q.Y+b {
+	// a, b is outside of attacking range then return false
+	if q.X != a && q.Y != b {
 		board[a][b] = oldValue
 		return false
 	}
@@ -44,10 +35,10 @@ func (q *Queen) move(board [9][9]Piece, a, b int) bool {
 	return true
 }
 
-func (q *Queen) display() {
-	fmt.Print(" Q ")
+func (q *Rook) display() {
+	fmt.Print(" R ")
 }
 
-func (q *Queen) isWhite() bool {
+func (q *Rook) isWhite() bool {
 	return q.White
 }

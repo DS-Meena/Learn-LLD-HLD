@@ -29,3 +29,5 @@ How do we play:
 2. Until check mate or stalemate: 
     1. Each player moves one piece, to any valid position.
     2. If opposite player's piece is at that position, he can capture the piece.
+
+[You tube video](https://www.youtube.com/watch?v=kk6QkWxz5jM&list=PL6W8uoQQ2c61X_9e6Net0WdYZidm7zooW&index=22)

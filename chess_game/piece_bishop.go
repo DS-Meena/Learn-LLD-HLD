@@ -2,26 +2,18 @@ package main
 
 import "fmt"
 
-type Queen struct {
+type Bishop struct {
 	X     int
 	Y     int
 	White bool
 }
 
-func (q *Queen) move(board [9][9]Piece, a, b int) bool {
+func (q *Bishop) move(board [9][9]Piece, a, b int) bool {
 
 	// other piece should not be present in path
 	oldValue := board[a][b]
 	board[a][b] = nil
 
-	if q.X == a && !isRowClear(board, min(q.Y, b), max(q.Y, b), q.X) {
-		board[a][b] = oldValue
-		return false
-	}
-	if q.Y == b && !isColumnClear(board, min(q.X, a), max(q.X, a), q.Y) {
-		board[a][b] = oldValue
-		return false
-	}
 	if q.X-a == q.Y-b && !isDiagonalClear(board, q.X, q.Y, a, b) {
 		board[a][b] = oldValue
 		return false
@@ -32,7 +24,7 @@ func (q *Queen) move(board [9][9]Piece, a, b int) bool {
 	}
 
 	// if (a, b) is outside of attacking range of queen
-	if q.X != a && q.Y != b && q.X-a != q.Y-b && q.X+a != q.Y+b {
+	if q.X-a != q.Y-b && q.X+a != q.Y+b {
 		board[a][b] = oldValue
 		return false
 	}
@@ -44,10 +36,10 @@ func (q *Queen) move(board [9][9]Piece, a, b int) bool {
 	return true
 }
 
-func (q *Queen) display() {
-	fmt.Print(" Q ")
+func (q *Bishop) display() {
+	fmt.Print(" B ")
 }
 
-func (q *Queen) isWhite() bool {
+func (q *Bishop) isWhite() bool {
 	return q.White
 }
