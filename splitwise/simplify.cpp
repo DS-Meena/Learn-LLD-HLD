@@ -11,6 +11,7 @@ struct Transaction {
     double amount;
 };
 
+// Greedy Algorithm
 vector<Transaction> simplify_debts(map<string, double>& balances) {
 
     vector<pair<string, double>> creditors, debtors;
