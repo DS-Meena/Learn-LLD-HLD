@@ -8,6 +8,7 @@ type Product interface {
 
 // Concrete Products
 type GroceryProduct struct {
+	Name  string
 	price float64
 }
 
@@ -20,6 +21,7 @@ func (p *GroceryProduct) GetType() string {
 }
 
 type ElectronicProduct struct {
+	Name  string
 	price float64
 }
 
