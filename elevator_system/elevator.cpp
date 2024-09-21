@@ -55,6 +55,13 @@ class Elevator {
                 if (currentFloor == nextRequest.destinationFloor) {
                     requests.pop();
                     state = State::STOPPED;
+
+                    // we can take user input here
+                    // to simulate a person entering the elevator
+                    // and pressing the button to go to the destination floor
+                    // and then we can call addRequest() to add the request to the queue
+
+                    // update direction acc to closest call
                     updateDirection();   // update direction acc to closest call
                 } else {
 
