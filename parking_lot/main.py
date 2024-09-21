@@ -1,6 +1,6 @@
-from datetime import time
-from parking_lot.parking_lot import *
-from parking_lot.utils import Logger
+import time
+from parking_lot import *
+from utils import Logger
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
                 spot = ParkingSpot(f"{vehicle_type}_{j}", vehicle_type)
                 floor.parking_spots.append(spot)
 
-        parking_lot.add_floor(floor)
+        parking_lot.floors.append(floor)
     
     # add entry and exit points
     parking_lot.entry_points.append(EntryPoint(1))

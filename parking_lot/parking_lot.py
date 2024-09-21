@@ -1,7 +1,7 @@
-import datetime
+from datetime import datetime
 
-from parking_lot.utils import calculate_fee_based_on_duration_and_vehicle_type
-from parking_lot.vehicle import Vehicle
+from utils import calculate_fee_based_on_duration_and_vehicle_type
+from vehicle import Vehicle
 import uuid
 
 class ParkingLot:
