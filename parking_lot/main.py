@@ -15,7 +15,7 @@ def main():
         # add 3 spots for each type of vehicle
         for vehicle_type in ["car", "bike", "truck"]:
             for j in range(3):
-                spot = ParkingSpot(f"{vehicle_type}_{j}", vehicle_type)
+                spot = ParkingSpot(f"{i}-{vehicle_type}-{j}", vehicle_type)
                 floor.parking_spots.append(spot)
 
         parking_lot.floors.append(floor)
@@ -40,7 +40,7 @@ def main():
             ticket = parking_lot.park_vehicle(vehicle)
 
             # if no exception, that means parked
-            logger.log_event("Vehicle Parked", f"Vechile {vehicle.license_plate} parked")
+            logger.log_event("Vehicle Parked", f"Vechile {vehicle.license_plate} parked in {ticket.spot.spot_id}")
 
             time.sleep(2)
 
