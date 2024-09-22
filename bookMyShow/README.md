@@ -46,13 +46,45 @@ class bookingService {
 
 ```
 
+### Concurrency Handling 🔄
+
+To solve the concurrency Issues, we will use Optimistic concurrency control (OCC) in the database transactions.
+
+As we know in Optimistic Concurrency control (OCC): 
+- Isolation level used is below Repeatable Read i.e. Read committed.
+- It has much higher concurrency than Pessimistic concurrency control.
+- Also there is no change of deadlock with OCC.
+- In case of conflic, overhead of transaction rollback and retry logic is implemented.
+
+| Isolation Level 📊 | Locking Strategy 🔐 | Dirty Read Possible | Non-Repeatable Read Possible | Phantom Read Possible |
+| --- | --- | --- | --- | --- |
+| Read Uncommitted  (highest concurrency) | Read: No Lock acquired & Write: No Lock acquired | Yes | Yes | Yes |
+| Read Committed | Read: Shared Lock acquired and Released as soon as Read is done & Write: Exclusive Lock acquired and keep till the end of the transaction | No | Yes | Yes |
+| Repeatable Read | Read: Shared Lock acquired and Released only at the end of the Transaction & Write: Exclusive Lock acquired and Released only at the end of the Transaction | No | No | Yes |
+| Serializable  (Least concurrency) | Same as Repeatable Read Locking Strategy & Write: Apply range Lock and lock is released only at the end of the transaction | No | No | No |
+
+From above table, we can check what types of locking mechanism is used by Read committed Isolation level.
+
 ## Flow Chart 
 
 ![Flow chart](image-1.png)
 
 
-## Sequene Diagram
-
+## Sequene Diagram 🔢
 
 ![alt text](image-2.png)
 *Sequence Diagram for bookMyShow sytem*
+
+Let's explain the sequene diagram for the bookMyShow system:
+
+1. User 🙋: Initiates the process by browsing movies
+2. MovieService: Responds with a list of available movies
+3. User: Selects a show and seats
+4. BookingService 🎟️: Receives the user's selection
+5. SeatService: Checks seat availability upon BookingService's request
+6. BookingService: Receives seat availability confirmation
+7. PaymentService: Processes the payment for the booking
+8. BookingService: Receives payment confirmation
+9. SeatService: Updates the seat status (booked)
+10. NotificationService 📨: Sends booking confirmation to the user
+11. User 🙋: Receives the booking confirmation
