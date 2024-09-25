@@ -143,3 +143,40 @@ Example: Online shopping system with three services: Order, Payment, and Invento
 *Fig: DB Events handled by Orchestrator*
 
 In both cases, if any step fails (e.g., payment declined or out of stock), the SAGA pattern ensures that all previous steps are reversed, maintaining consistency across all services. 🔄✅
+
+# CQRS Pattern
+
+CQRS (Command Query Responsibility Segregation) is a design pattern that separates read and write operations for a data store. This pattern is particularly useful in microservices architecture, especially when dealing with database-per-service approach. 📊🔍
+
+By command we mean, Create, Update and Delete operations. Query means read operations. Since in Database-per-service approach, querying across different databases is difficult. We use separate the data-models along with databases that are used for command and query.
+
+![CQRS Design pattern](What-is-CQRS-Design-Pattern.webp)
+*Fig: CQRS Design Pattern [Credit](https://www.geeksforgeeks.org/cqrs-command-query-responsibility-segregation/)*
+
+Because of using a single database for querying, we can query data of all services. The Read database is updated whenever there is change in write storage with the help of procedure events.
+
+### Pros:
+
+- Improved Performance: Optimized read and write operations. ⚡
+- Scalability: Independent scaling of read and write services. 📈
+- Flexibility: Allows for different data models for read and write operations. 🔀
+
+### Cons:
+
+- Increased Complexity: Maintaining separate read and write models adds complexity. 🧩
+- Eventual Consistency: May lead to temporary data inconsistencies. ⏳
+- Development Overhead: Requires more code and careful design. 👨‍💻
+
+### Example
+
+Consider an e-commerce system with separate microservices for Orders and Inventory:
+
+- Order Service: Handles order creation and management. 📦
+- Inventory Service: Manages product stock levels. 🏭
+
+In a CQRS pattern:
+
+- Write Model: Order Service writes new orders to its database. Inventory Service updates stock levels in its database. ✍️
+- Read Model: A separate read-optimized database combines data from both services, updated asynchronously. This allows for efficient querying of order status along with current stock levels. 📚
+
+This approach allows for efficient order processing and inventory management while providing a denormalized view for complex queries across both domains. 🎯
