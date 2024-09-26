@@ -121,6 +121,7 @@ In this approach, each service publishes domain events that trigger local transa
 
 Example: Online shopping system with three services: Order, Payment, and Inventory.
 ![Sequence of Events](image.png)
+
 *Fig: Sequence of DB update events*
 
 ## 2. Orchestration-based SAGA 🎭
@@ -140,6 +141,7 @@ This approach uses a central orchestrator to manage the transaction and compensa
 Example: Online shopping system with three services: Order, Payment, and Inventory.
 
 ![Events handled by Orchestrator](image-2.png)
+
 *Fig: DB Events handled by Orchestrator*
 
 In both cases, if any step fails (e.g., payment declined or out of stock), the SAGA pattern ensures that all previous steps are reversed, maintaining consistency across all services. 🔄✅
@@ -151,6 +153,7 @@ CQRS (Command Query Responsibility Segregation) is a design pattern that separat
 By command we mean, Create, Update and Delete operations. Query means read operations. Since in Database-per-service approach, querying across different databases is difficult. We use separate the data-models along with databases that are used for command and query.
 
 ![CQRS Design pattern](What-is-CQRS-Design-Pattern.webp)
+
 *Fig: CQRS Design Pattern [Credit](https://www.geeksforgeeks.org/cqrs-command-query-responsibility-segregation/)*
 
 Because of using a single database for querying, we can query data of all services. The Read database is updated whenever there is change in write storage with the help of procedure events.
