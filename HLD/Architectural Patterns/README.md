@@ -13,8 +13,22 @@ Types of Architectural Design Patterns:
 - **Event-Bus Pattern 🚌:** Handles communication between different parts of an application through events.
 - **Model-View-Controller (MVC) 🧩:** Separates the application logic into three interconnected components.
 - **Blackboard Pattern 📋:** Useful for problems for which no deterministic solution strategies are known.
+- **Monolithic Pattern**
+- **Microservices Pattern**
 
 These patterns help in creating robust, scalable, and maintainable software architectures by providing proven solutions to common architectural challenges. 🚀💡
+
+## Layered (n-tier) Architecture
+
+N-tier architecture, also known as multi-tier architecture, is a client-server architecture where the presentation, application processing, and data management functions are physically separated. 🔀
+
+This separation allows for better scalability, maintainability, and flexibility in the system design. 🚀
+
+## Master-Slave Pattern
+
+Master-slave architecture pattern is a common approach in distributed systems for improving performance, scalability, and reliability. This works by distributing work between a master component and several slave components.
+
+Example: Master-slave database architecture.
 
 
 # MVC Design Pattern 🧩
