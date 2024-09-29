@@ -43,7 +43,78 @@ Here, we have a 2-tier architecture: 🎭
 
 To handle more users, we introduce a load balancer and multiple application servers.
 
+## Load Balancing 🔀
+
+Load balancing is the process of distributing network traffic across multiple servers to ensure that no single server becomes overloaded. This helps to improve the performance, availability, and scalability of a system, as well as prevent downtime and service disruptions. 🚀
+
+In a load-balanced system, incoming requests are distributed among a group of servers that work together to handle the traffic. This can be achieved using a variety of algorithms, such as round-robin, least connections, and IP hash. Load balancers can also perform health checks on servers to ensure that they are available and functioning properly before sending traffic to them. 🔍
+
+### Load Balancing using Hashing 🔢
+
+In load balancing using hashing, a hash function is used to map incoming requests to a particular server based on a key value, such as the client's IP address or session ID. This ensures that all requests from a particular client are sent to the same server, which can help to improve performance and reduce the likelihood of errors due to inconsistent data. 🔐
+
+However, it can also lead to uneven load distribution if the key values are not evenly distributed. To address this, some load balancing algorithms use a combination of hashing and other factors, such as server load and response time, to determine which server to send requests to. ⚖️
+
+![Distributing load using hash](Untitled.png)
+
+*Fig: Distributing load using hash ([credit](https://afteracademy.com/))* 
+
+### Consistent Hashing 🔄
+
+Consistent hashing is a technique used in load balancing that ensures that the distribution of requests among servers remains stable even when servers are added or removed from the system. 🛠️
+
+In consistent hashing, each server is assigned a unique identifier or "hash" value, which is used to map incoming requests to a particular server. The hash function used to generate these values ensures that each server is evenly distributed across the hash space, allowing for efficient and consistent load balancing even as the system scales up or down. 🌐
+
+When a new server is added to the system, only a small portion of the requests need to be remapped, as the majority of requests will still be directed to the same servers as before. This can help to reduce the impact of adding or removing servers on the system's performance and availability. 🔧
+
+However, consistent hashing can also introduce some challenges, such as "hot spots" where a single server receives a disproportionate amount of traffic, or the need to rebalance the system periodically to ensure that servers are evenly distributed. 🔥
+
+**Case 1: Scale down 📉**
+
+![Scale Down](Untitled-1.png)
+
+*Fig: In case of scale down, we need to redistribute load ([credit](https://afteracademy.com/))*
+
+**Case 2: Scale up 📈**
+
+![Scale up](Untitled-2.png)
+
+*Fig: In case of scale up, we need to redistribute load ([credit](https://afteracademy.com/))*
+
+### Working ⚙️
+
+In consistent hashing, a hash function is used to map each server to a point on a circle (usually using a 32-bit or 64-bit integer). The output of the hash function is a value between 0 and 2^32-1 or 2^64-1, represented as a point on the circle. 🔢
+
+Similarly, each object or request that needs to be mapped to a server is also hashed to a point on the same circle using the same hash function. 🎯
+
+To find which server should handle a particular request, the system looks for the first server that appears after the point representing the request on the circle **(in clockwise direction**). This server is responsible for handling the request. 🔄
+
+If a server is added to or removed from the system, only the requests that fall between the new server and the next server on the circle need to be remapped. This means that most of the requests will still be directed to the same servers as before, minimizing the impact of adding or removing servers on the system's overall load. 🔀
+
+In summary, consistent hashing works by mapping servers and requests to points on a circle using a hash function, and then using the circle to determine which server should handle each request. This allows for efficient and consistent load balancing even as the system scales up or down. 🌟
+
+![Consistent hashing](Untitled-3.png)
+
+*Fig: Consistent hashing using circular array representing servers and requests ([credit](https://afteracademy.com/))*
+
+### Virtual servers 💻
+
+To handle the case of scale up and down, we use virtual servers. Using multiple hash functions for uniform distribution of load after adding or removing server from circular array.
+
+![Virtual serves handle scale up and down](Untitled-4.png)
+
+*Fig: Using virtual servers to handle scale up and down ([credit](https://afteracademy.com/))*
+
+By using virtual servers, we make sure: -
+
+- If a server is removed, it will we removed from multiple indexes on array. 🔽
+- If a server is added, it will be added at multiple indexes on array. 🔼
+
+This guarantee a uniform distribution of load. ⚖️
+
 ![alt text](image-2.png)
+
+*Fig: Added load balancer before application servers*
 
 ### Pros
 - Improved availability and fault tolerance
@@ -338,3 +409,8 @@ Despite these challenges, sharding remains a powerful tool for scaling databases
 - **Query Complexity:** Queries in a sharded system can be more complex, especially for operations across multiple shards.
 
 By implementing these steps, you can scale a single application server to support millions of users. Each step addresses specific scalability challenges, but also introduces new complexities. The key is to implement these solutions incrementally based on your application's growth and specific requirements. 🚀
+
+## References 👏
+
+1. [AfterAcademy](https://afteracademy.com/)
+2. [Concept && Coding](https://www.youtube.com/watch?v=rExh5cPMZcI&list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7&index=6&pp=iAQB)
