@@ -379,7 +379,7 @@ Sharding involves partitioning data across multiple database instances, where ea
 - **1. Horizontal Sharding:** Rows of a table are distributed across multiple databases.
 - **2. Vertical Sharding:** Different tables or columns are distributed across multiple databases.
 
-Here's a visual representation of horizontal vs vertical sharding:
+Consistent hashing can be used in horizontal scaling too. Here's a visual representation of horizontal vs vertical sharding:
 
 ![Horizontal and vertical sharding](image-12.png)
 
