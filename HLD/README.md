@@ -42,34 +42,37 @@ Daily active users = 200 million
 
 2 bytes per character
 
-200 bytes + 50 bytes = 250 bytes
+200 bytes + 50 bytes (meta data) = 250 bytes
 
-Tweet text data = 25GB/day  
+**Tweet text data** = 250 bytes * 100 million/day = 25 * 10^9 bytes/day = 25GB/day  
 
 1/20 will have an image associated with it: 200KB
 
+**Tweet image data** = 5 million * 200 kb = 10 * 10^11 = 1TB / day
+
 1/100 will have a video associated with it: 2MB
+
+**Tweet video data** = 1 million * 2MB = 1 * 10^12 MB = 1 TB / day
 
 Image + Video = (1 + 2) = 3 TB/day 
 
 Total final storage = 25 GB + 3 TB ~= 3 TB/day  
 
-
 ### Bandwidth Estimation
 
 Incoming to server = 3 TB/day ~= 23 MB/sec
 
-Outgoing text tweet data = 20B * 250 bytes ~= 60 MB/sec  
+**Outgoing text tweet data** = 20B * 250 bytes ~= 60 MB/sec  
 
 1/20 will have an image associated with it: 200KB 
 
-Outgoing image data ~= 2.5 GB/sec  
+**Outgoing image data** = 1B/day * 200 KB ~= 2.5 GB/sec  
 
 1/100 will have a video associated with it: 2MB 
 
 When we show 5 videos, users watch 1 (1/5)
 
-Outgoing video data ~= 1 GB/sec   
+**Outgoing video data** = 200M * 2MB / 5 ~= 1 GB/sec   
 
 Total Outgoing = 60 MB/sec + 2.5 GB/sec + 1 GB/sec ~= 3.5 GB/sec  
 
