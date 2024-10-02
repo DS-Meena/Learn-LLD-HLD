@@ -228,33 +228,9 @@ In summary, CDNs are a crucial component of modern web infrastructure, enhancing
 
 ## 7. Multiple Data Centers 🏢🏢
 
-Expanding to multiple data centers for improved availability and disaster recovery.
-
-Traffic is distributed among different centers based on geographical areas.
+Expanding to multiple data centers for improved availability and disaster recovery. Traffic is distributed among different centers based on geographical areas.
 
 ![Multiple Data centers](image-5.png)
-
-Data replication and consistency can be managed in following ways, each have its own advantages and disadvantages:
-
-1. **Synchronous Replication ⚡**: Real-time data copying 
-    - Ensures immediate consistency
-    - May impact performance due to waiting for confirmation
-
-2. **Asynchronous Replication 🕰️**: Delayed data copying 
-    - Better performance
-    - Potential for temporary inconsistencies
-
-3. **Eventual Consistency 🎯**: Data becomes consistent over time 
-    - Balances performance and consistency
-    - Widely used in distributed systems
-
-4. **Conflict Resolution 🔀**: Handling simultaneous updates 
-    - Version vectors or timestamps to track changes
-    - Merge conflicting updates or use last-write-wins
-
-5. **Quorum-based Systems 🗳️**: Ensures consistency across a subset of replicas 
-    - Read/Write operations require agreement from a quorum of nodes
-    - Balances availability and consistency
 
 Managing data consistency across multiple data centers is a complex task, often involving trade-offs between consistency, availability, and partition tolerance (CAP theorem) 🔍
 
@@ -268,6 +244,61 @@ Managing data consistency across multiple data centers is a complex task, often 
 - Significantly increased infrastructure costs (Redundant data)
 - Complex data synchronization across data centers
 - Challenges in maintaining consistency across locations
+
+Following architecture designs are used while maintaing multiple data centers for your application.
+
+### Active-Passive Architecture 🔵⚪
+
+In an active-passive setup, one data center (the active site) handles all the traffic while the other (passive site) remains on standby, ready to take over if the active site fails. 🚦
+
+![Active-Passive Architecture](images/image-b.png)
+
+*Fig: Active-passive Architecture*
+
+This architecture is used with databases that don't natively support **multi-master replication** 🔒 (only one node is allowed to perform write operations)
+
+Examples: Traditional relational databases like MySQL (without group replication), PostgreSQL (without multi-master extensions) 🐘
+
+**Advantages:**
+
+- Simple configuration and management 🛠️
+- Clear separation of concerns 🧩
+- Reduced risk of data conflicts 🔒
+
+**Disadvantages:**
+
+- Underutilization of resources in the passive site 💤
+- Potential for longer downtime during failover ⏱️
+
+**Example:** A financial institution using a primary data center for all transactions, with a secondary site ready for disaster recovery. 🏦
+
+### Active-Active Architecture 🔵🔵
+
+In an active-active configuration, all data centers actively handle traffic simultaneously, distributing the load and providing redundancy. 🔄
+
+![Active-active architecture](images/image-a.png)
+
+*Fig: Active-Active Architecture*
+
+This architecture is used with databases that has multi-master support or conflict resolution mechanisms 🔀
+
+**Examples**: Cassandra, CockroachDB, MongoDB (with sharding), MySQL (with group replication or Galera), PostgreSQL (with BDR) 🌟
+
+**Advantages:**
+
+- Better resource utilization 📈
+- Improved performance and reduced latency 🚀
+- Higher availability (99.999%) and fault tolerance 🛡️
+
+**Disadvantages:**
+
+- More complex to set up and manage 🧠
+- Potential for data conflicts and synchronization issues 🔄
+- Higher bandwidth requirements for inter-datacenter communication 🌐
+
+**Example:** A global e-commerce platform using multiple data centers to serve customers in different regions with low latency. 🛍️
+
+The choice between active-passive and active-active architectures depends on factors like application requirements, budget, geographical distribution of users, and the specific capabilities of your database system. 🤔
 
 ## 8. Message Queue 📨
 
