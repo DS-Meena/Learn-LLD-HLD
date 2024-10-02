@@ -6,7 +6,7 @@ In this problem, we will try to scale a single application server so that it is 
 
 Initially, we start with a single server that handles everything: the application, database, and web server.
 
-![Single Server](image.png)
+![Single Server](images/image.png)
 
 ### Pros
 - Simple to set up and manage
@@ -21,7 +21,7 @@ Initially, we start with a single server that handles everything: the applicatio
 
 Next, we separate the application and database into different servers to improve performance and scalability.
 
-![DB Server separation](image-1.png)
+![DB Server separation](images/image-1.png)
 
 Here, we have a 2-tier architecture: 🎭
 
@@ -55,7 +55,7 @@ In load balancing using hashing, a hash function is used to map incoming request
 
 However, it can also lead to uneven load distribution if the key values are not evenly distributed. To address this, some load balancing algorithms use a combination of hashing and other factors, such as server load and response time, to determine which server to send requests to. ⚖️
 
-![Distributing load using hash](Untitled.png)
+![Distributing load using hash](images/Untitled.png)
 
 *Fig: Distributing load using hash ([credit](https://afteracademy.com/))* 
 
@@ -71,13 +71,13 @@ However, consistent hashing can also introduce some challenges, such as "hot spo
 
 **Case 1: Scale down 📉**
 
-![Scale Down](Untitled-1.png)
+![Scale Down](images/Untitled-1.png)
 
 *Fig: In case of scale down, we need to redistribute load ([credit](https://afteracademy.com/))*
 
 **Case 2: Scale up 📈**
 
-![Scale up](Untitled-2.png)
+![Scale up](images/Untitled-2.png)
 
 *Fig: In case of scale up, we need to redistribute load ([credit](https://afteracademy.com/))*
 
@@ -93,7 +93,7 @@ If a server is added to or removed from the system, only the requests that fall 
 
 In summary, consistent hashing works by mapping servers and requests to points on a circle using a hash function, and then using the circle to determine which server should handle each request. This allows for efficient and consistent load balancing even as the system scales up or down. 🌟
 
-![Consistent hashing](Untitled-3.png)
+![Consistent hashing](images/Untitled-3.png)
 
 *Fig: Consistent hashing using circular array representing servers and requests ([credit](https://afteracademy.com/))*
 
@@ -101,7 +101,7 @@ In summary, consistent hashing works by mapping servers and requests to points o
 
 To handle the case of scale up and down, we use virtual servers. Using multiple hash functions for uniform distribution of load after adding or removing server from circular array.
 
-![Virtual serves handle scale up and down](Untitled-4.png)
+![Virtual serves handle scale up and down](images/Untitled-4.png)
 
 *Fig: Using virtual servers to handle scale up and down ([credit](https://afteracademy.com/))*
 
@@ -112,7 +112,7 @@ By using virtual servers, we make sure: -
 
 This guarantee a uniform distribution of load. ⚖️
 
-![alt text](image-2.png)
+![alt text](images/image-2.png)
 
 *Fig: Added load balancer before application servers*
 
@@ -130,7 +130,7 @@ This guarantee a uniform distribution of load. ⚖️
 
 To improve database performance and reliability, we implement database replication.
 
-![Database replication](image-9.png)
+![Database replication](images/image-9.png)
 
 The **Master-slave database 💾 architecture design pattern** is a common approach in distributed systems for improving performance, scalability, and reliability. Here's how it works: 
 
@@ -168,7 +168,7 @@ Introducing a caching layer to reduce database load and improve response times.
 
 Caching 🔄 can be implemented at various system levels, including application, web server, and **database layers**. It can store diverse data types like static files, database queries, and API responses. Caching is particularly useful for **expensive database operations**, acting as a buffer before accessing the database. 🗃️
 
-![Cache](image-8.png)
+![Cache](images/image-8.png)
 
 **Time-to-Live (TTL) ⏳** is a crucial concept in caching, determining how long data remains valid in the cache before needing refresh. This helps maintain data freshness and relevance. 🕒
 
@@ -196,7 +196,7 @@ A Content Delivery Network (CDN) is a geographically distributed network of prox
 - **Latency reduction:** CDNs solve the problem of network latency by serving content from nodes closer to the end-user. ⚡
 - **Static and dynamic content:** CDN nodes primarily cache static data (images, videos, CSS, JavaScript), but modern CDNs can also handle dynamic content. 🖼️🎥
 
-![CDN](image-4.png)
+![CDN](images/image-4.png)
 
 ### How CDNs Work: An Example 🌟
 
@@ -208,7 +208,7 @@ Imagine a website's origin server is in USA, but it has users worldwide. Here's 
 4. If not, it requests the content from the origin server in USA.
 5. The CDN node then caches this content for future requests. 💾
 
-![Example](how-does-a-CDN-work-1.png)
+![Example](images/how-does-a-CDN-work-1.png)
 
 *Fig: CDN answering requests from CDN cache in case of no response from server*
 
@@ -230,7 +230,7 @@ In summary, CDNs are a crucial component of modern web infrastructure, enhancing
 
 Expanding to multiple data centers for improved availability and disaster recovery. Traffic is distributed among different centers based on geographical areas.
 
-![Multiple Data centers](image-5.png)
+![Multiple Data centers](images/image-5.png)
 
 Managing data consistency across multiple data centers is a complex task, often involving trade-offs between consistency, availability, and partition tolerance (CAP theorem) 🔍
 
@@ -315,7 +315,7 @@ In the same way, message queues are mostly used for internal background tasks on
 
 This helps keep everything running smoothly 🧈, even when there's a lot going on. It's like having a team of helpers working on big tasks in the background while you keep talking to your users without making them wait.
 
-![Added Messaing Queue](image-6.png)
+![Added Messaing Queue](images/image-6.png)
 
 ### Message Queue Components 🧩
 
@@ -354,7 +354,7 @@ In systems like RabbitMQ, an exchange is responsible for routing messages to dif
 
 Let's look at some examples using RabbitMQ and Kafka:
 
-![RabbitMQ Example](image-3.png)
+![RabbitMQ Example](images/image-3.png)
 
 *Fig: RabbitMQ example*
 
@@ -362,7 +362,7 @@ Let's look at some examples using RabbitMQ and Kafka:
 - The Exchange routes messages to different queues based on the routing key
 - Consumers process messages from their respective queues
 
-![alt text](image-10.png)
+![alt text](images/image-10.png)
 
 *Fig: Kafka example*
 
@@ -412,11 +412,11 @@ Sharding involves partitioning data across multiple database instances, where ea
 
 Consistent hashing can be used in horizontal scaling too. Here's a visual representation of horizontal vs vertical sharding:
 
-![Horizontal and vertical sharding](image-12.png)
+![Horizontal and vertical sharding](images/image-12.png)
 
 *Fig: Horizontal and vertical sharding*
 
-![Sharding](image-7.png)
+![Sharding](images/image-7.png)
 
 ### Pros
 - Improved database performance and scalability
