@@ -48,9 +48,31 @@ class bookingService {
 
 ### Concurrency Handling 🔄
 
-To solve the concurrency Issues, we will use Optimistic concurrency control (OCC) in the database transactions.
+Before we look at how concurrency is handled. First we will check what problems could arise if concurrency is not handled properly.
 
-As we know in Optimistic Concurrency control (OCC): 
+1. **Dirty Read 💩**
+
+    If Transaction A is reading the data which is writing by Transaction B and not yet even committed. If transaction B does the rollback, then whatever data read by Transaction A is known as dirty read.
+
+2. **Non-Repeatable Read 🔁**
+
+    If suppose Transaction A, reads the same row several times and there is a chance that it reads different value.
+
+3. **Phantom Read 👻**
+
+    If suppose Transaction A, executes same query several times and there is a chance that the rows returned are different.
+
+Shared lock is used for reading and Exclusive lock is used for Writing. These locking mechanism helps us in avoiding the above above problems.
+
+| Lock Type | Another Shared Lock | Another Exclusive Lock |
+| --- | --- | --- |
+| Have Shared Lock | Yes | No |
+| Have Exclusive Lock | No | No |
+
+For our problem of booking system, we will use Optimistic concurrency control (OCC) in the database transactions.
+
+#### Optimistic Concurrency control (OCC)
+
 - Isolation level used is below Repeatable Read i.e. Read committed.
 - It has much higher concurrency than Pessimistic concurrency control.
 - Also there is no change of deadlock with OCC.
