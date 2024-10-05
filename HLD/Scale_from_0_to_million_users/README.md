@@ -317,7 +317,7 @@ This helps keep everything running smoothly 🧈, even when there's a lot going 
 
 ![Added Messaing Queue](images/image-6.png)
 
-### Message Queue Components 🧩
+Key components of messaing queue:
 
 **1. Producer 🏭:** The application or service that creates messages and sends them to the message queue.
 
@@ -325,14 +325,127 @@ This helps keep everything running smoothly 🧈, even when there's a lot going 
 
 **3. Consumer/Subscriber (Workers) 👥:** The application or service that receives and processes messages from the queue.
 
-    Multipler workers can be set up to process messages in paralle, improving system's ability to handle high volume of tasks.
+Multipler workers can be set up to process messages in parallel, improving system's ability to handle high volume of tasks.
 
-**4. Requeue ♻️:** The process of putting a message back into the queue if it wasn't processed successfully.
+### Messaging Queue Models: Point-to-Point vs Pub-Sub
+
+In messaging systems like Kafka and RabbitMQ, two primary models are used for message distribution: Point-to-Point and Publish-Subscribe (Pub-Sub). Let's explore each:
+
+1. **Point-to-Point (P2P) Model 👉**
+
+    In the Point-to-Point model:
+
+    - Messages are sent from a single producer to a single consumer 1️⃣
+    - Each message is consumed by only one receiver
+    - Messages are typically deleted after being successfully processed
+    - Useful for task distribution among workers
+
+    Example: A queue of customer orders where each order should be processed by exactly one worker.
+
+2. **Publish-Subscribe (Pub-Sub) Model 🚇**
+
+    In the Publish-Subscribe model:
+
+    - Messages are broadcast from a producer (publisher) to multiple consumers (subscribers) 🧑🏻‍🧑🏼‍🧒🏽
+    - Each message can be consumed by multiple receivers
+    - Messages are typically retained for a period to allow multiple consumers to access them
+    - Useful for event broadcasting and parallel processing
+
+    Example: A stream of stock price updates that multiple applications need to receive and process independently.
+
+Let's look at some examples using RabbitMQ and Kafka:
+
+### Kafka 🧩
+
+Kafka is a widely used messaging queue, its uses a pull based approach to send messages.
+
+When a message is published it can have it's value, topic, key and partition header values. Value and topic of the message are mandatory fields, while key and parition are not mandatory.
+
+If partition is not given, we can use key hash to determine the partition of the message. If both key and partition are not given, partition is decided based on round robin method.
+
+
+![alt text](images/image-10.png)
+
+*Fig: A Simple Kafka example*
+
+Let's explore the key components and concepts of Apache Kafka:
+
+1. **Producer 🏭:** Producer publishes messages to Kafka topics in kafka cluster. 
+    - It is responsible for publishing data to appropriate topics and partitions.
+
+2. **Consumer 🍽️:** Subscribes to topics and processes the published messages. Consumers pull messages from Kafka brokers.
+
+    It is responsible for reading data from topics and keeping track of consumed messages using offsets.
+
+3. **Consumer Group 👥:** A set of consumers that work together to consume messages from one or more topics.
+
+    - Multiple Consumer Groups can read from the same topic
+    - Each message is delivered to only one consumer within each subscribed consumer group.
+    
+
+4. **Topic 📚:** Topic is the category or feed name to which messages are published. 
+
+    - A topic is divided into multiple partitions distributed across multiple brokers.
+    - A topic can have zero, one, or many consumers that subscribe to the data written to it.
+
+5. **Partition 🍕:** Each topic is divided into partitions. Partitions allow for parallel processing and improved throughput. Messages within a partition are ordered.
+
+    - Partition is the place where the actual messages reside or you can say it's the messaging queue. 
+    - The messages are ordered using offset.
+    - Each partition has multiple copies in different brokers. Original is known as leader and others are called copy.
+    - Reading and writing happens from leader only. The changes are later synced with its copies asynchronously.
+
+6. **Offset 📏:** A unique identifier of a message within a partition. It's a sequential number assigned to messages as they arrive in a partition.
+
+7. **Broker 💻:** A Kafka server that stores data and serves client requests. Multiple brokers form a Kafka cluster.
+
+- A broker contains multiple partitions.
+
+8. **Cluster 🌐:** A group of Kafka brokers working together to provide scalability and fault tolerance.
+
+9. **ZooKeeper 🐘:** Used for managing and coordinating Kafka brokers. It maintains metadata about the Kafka cluster, though newer versions of Kafka are moving towards removing this dependency.
+
+![Kafka Architecture](images/Kafkas-architecture-illustrated-with-3-partitions-3-replicas-and-5-brokers.png)
+
+*Fig: Kafka Architecture [researchgate](https://www.researchgate.net/publication/326564203_KerA_Scalable_Data_Ingestion_for_Stream_Processing)*
+
+In the above diagram, you can see kafka brokers has multiple partitions (leader and their replicas). Zookeper maintains the different brokers in the cluster. Partition contains the actual data, from where the messages are consumed.
+
+#### Faul tolerance in Kafka 🛡️
+
+Kafka's architecture is designed to handle failures gracefully:
+
+**Broker failure** 
+- Each partition is replicated across multiple brokers. If one broker fails, another can take over.
+
+**Partition failure** 
+- If the current partition leader fails ZooKeeper helps in electing a new leader.
+
+**Consumer failure** 
+- If a consumer in a group fails, Kafka automatically reassigns its partitions to other consumers in the group.
+- Consumers can resume from where they left off using offsets, even after a failure.
+
+**Not able to process message**
+
+If a consumer is not able to process the message. It will retry 3-5 then add the message to failure queue or dead queue, where it can be handled later.
+
+
+### Rabbit MQ 📊
+
+Rabbit MQ is another popular messaging queue. It is a push based approach unlike kafka.
+
+![RabbitMQ Example](images/image-3.png)
+
+*Fig: RabbitMQ example*
+
+- The Producer sends messages to the Exchange
+- The Exchange routes messages to different queues based on the routing key
+- Consumers process messages from their respective queues
+- If the process is unsuccessful it again put back into the queue, this is known as **Requeue**.
 
 ### Exchange 🚀
 
 In systems like RabbitMQ, an exchange is responsible for routing messages to different queues based on rules.
-
 
 - **Queue 📦:** The actual buffer where messages are stored.
 
@@ -350,26 +463,6 @@ In systems like RabbitMQ, an exchange is responsible for routing messages to dif
 
 **3. Topic Exchange 🌐:** Routes messages to queues based on wildcard matches between the routing key and the binding key pattern.
 
-### Examples📊
-
-Let's look at some examples using RabbitMQ and Kafka:
-
-![RabbitMQ Example](images/image-3.png)
-
-*Fig: RabbitMQ example*
-
-- The Producer sends messages to the Exchange
-- The Exchange routes messages to different queues based on the routing key
-- Consumers process messages from their respective queues
-
-![alt text](images/image-10.png)
-
-*Fig: Kafka example*
-
-- The Producer sends messages to a Kafka topic in the Kafka Cluster
-- Multiple Consumer Groups can read from the same topic
-- Each message is delivered to one consumer within each subscribed consumer group
-
 Both RabbitMQ and Kafka are powerful message queue systems, but they have different use cases:
 
 **RabbitMQ 🐰:** Great for complex routing scenarios and when you need guaranteed message delivery.
@@ -379,8 +472,8 @@ Both RabbitMQ and Kafka are powerful message queue systems, but they have differ
 By using message queues, you can create more resilient, scalable, and decoupled systems! 🚀💪
 
 ### Pros 🦾
-- Improved system reliability and fault tolerance
-- Better handling of traffic spikes
+- Improved system reliability (because queue provides retry capability) and fault tolerance
+- Better handling of traffic spikes 🚦 (Asynchronous - large jobs can be done later)
 - Decoupling of system components
 
 ### Cons 🚧
