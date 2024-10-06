@@ -399,7 +399,7 @@ Let's explore the key components and concepts of Apache Kafka:
 
 7. **Broker 💻:** A Kafka server that stores data and serves client requests. Multiple brokers form a Kafka cluster.
 
-- A broker contains multiple partitions.
+    - A broker contains multiple partitions.
 
 8. **Cluster 🌐:** A group of Kafka brokers working together to provide scalability and fault tolerance.
 
