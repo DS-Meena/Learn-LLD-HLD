@@ -96,6 +96,24 @@ Let's explore soem common load balancing algorithms
 
     *Fig: Distributing load using hash ([credit](https://afteracademy.com/))* 
 
+    **Case 1: Scale down 📉**
+
+    ![Scale Down](images/Untitled-1.png)
+
+    *Fig: In case of scale down, we need to redistribute load ([credit](https://afteracademy.com/))*
+
+    Let's say server 4 fails, now requests with request ID between [61-80] will start failing. To fix this, we need to rebalance the requests among remaining servers.
+
+    **Case 2: Scale up 📈**
+
+    ![Scale up](images/Untitled-2.png)
+
+    *Fig: In case of scale up, we need to redistribute load ([credit](https://afteracademy.com/))*
+
+    In this scenario, the company adds another server to handle requests. Now to equally distribute the load, we have to rebalance all requests among 5 servers.
+
+    In these two scenarios, we are to rebalance the load among all active servers which can cuase downtime. This is solving with the help of consistent hashing algorithm.
+
 ### Dynamic Algorithms
 
 1. **Least Connection** 👥: Directs traffic to the server with the fewest active connections.
@@ -107,25 +125,13 @@ Let's explore soem common load balancing algorithms
 
 4. **Consistent Hashing 🔄**
 
-    Consistent hashing is a technique used in load balancing that ensures that the distribution of requests among servers remains stable even when servers are added or removed from the system. 🛠️
+    Consistent hashing is a technique used in load balancing that ensures that the distribution of requests among servers remains stable even **when servers are added or removed** from the system. 🛠️
 
     In consistent hashing, each server is assigned a unique identifier or "hash" value, which is used to map incoming requests to a particular server. The hash function used to generate these values ensures that each server is evenly distributed across the hash space, allowing for efficient and consistent load balancing even as the system scales up or down. 🌐
 
     When a new server is added to the system, only a small portion of the requests need to be remapped, as the majority of requests will still be directed to the same servers as before. This can help to **reduce the impact of adding or removing servers** on the system's performance and availability. 🔧
 
     However, consistent hashing can also introduce some challenges, such as "hot spots" where a single server receives a disproportionate amount of traffic, or the need to rebalance the system periodically to ensure that servers are evenly distributed. 🔥
-
-    **Case 1: Scale down 📉**
-
-    ![Scale Down](images/Untitled-1.png)
-
-    *Fig: In case of scale down, we need to redistribute load ([credit](https://afteracademy.com/))*
-
-    **Case 2: Scale up 📈**
-
-    ![Scale up](images/Untitled-2.png)
-
-    *Fig: In case of scale up, we need to redistribute load ([credit](https://afteracademy.com/))*
 
     ### Working ⚙️
 
