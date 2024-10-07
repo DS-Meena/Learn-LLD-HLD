@@ -216,6 +216,7 @@ Let's talk about the failure scenarios, to understand it's fault tolerance.
 - Increased storage costs
 
 ## 5. Cache 💾
+---
 
 Introducing a caching layer to reduce database load and improve response times.
 
@@ -239,6 +240,197 @@ Example: Redis 💡, an in-memory data structure store, is widely used as a data
 - Maintaining data consistency across multiple cache instances challenges.
 - Additional complexity in application logic
 
+## Distributed Caching 🚀
+
+Distributed caching is a technique used in distributed systems to store and manage frequently accessed data across multiple cache servers. It helps improve application performance, reduce database load, and enhance scalability. 🌟
+
+### Why Use Distributed Caching? 🤔
+
+- Improved Performance: Faster data retrieval compared to database queries 🏎️
+- Reduced Database Load: Offloads frequent queries from the primary database 📊
+- Enhanced Scalability: Easily add or remove cache nodes as needed 📈
+- High Availability: Multiple cache nodes ensure continued operation if one fails 🛡️
+
+### Caching Strategies 📚
+
+### 1. Cache-Aside (Lazy Loading) 🐢
+
+In this strategy, the cache is not updated during write operations. Instead, it's only updated when there's a cache miss during read operations.
+
+Here's how it works:
+
+1. Application checks the cache for requested data.
+2. If data is found (cache hit), it's returned immediately.
+3. If data is not found (cache miss), the application:
+
+    a. **Application fetches data** from the database
+    
+    b. Updates the cache with this data
+    
+    c. Returns the data to the client
+
+This approach might introduce temporary inconsistencies between cache and database.
+
+```mermaid
+sequenceDiagram
+    participant A as Application
+    participant C as Cache
+    participant D as Database
+    A->>C: Check for data
+    alt Data in cache
+        C->>A: Return data
+    else Data not in cache
+        A->>D: Query database
+        D->>A: Return data
+        A->>C: Update cache
+        C->>A: Confirm update
+    end
+```
+
+**Pros:**
+
+- Only requested data is cached, optimizing cache space 🎯
+- Cache failures don't break the application, improving resilience 💪
+
+**Cons:**
+
+- Initial requests may be slow due to cache misses 🐌
+- Risk of stale data if cache invalidation is not properly managed 🧀
+
+### 2. Read-Through 📚
+
+In this strategy, the cache sits between the application and the database. When a read request comes in, it's always directed to the cache first. Here's how it works:
+
+1. Application requests data from the cache.
+2. If the data is in the cache (cache hit), it's returned immediately.
+3. If the data is not in the cache (cache miss):
+
+    a. The **cache fetches the data** from the database
+
+    b. The cache stores the fetched data
+
+    c. The cache returns the data to the application
+
+In Cache aside, it was application responsibility to update data in cache in case of cache miss, but here it is handled by cache itself.
+
+```mermaid
+sequenceDiagram
+    participant A as Application
+    participant C as Cache
+    participant D as Database
+    A->>C: Request data
+    alt Data in cache
+        C->>A: Return data
+    else Data not in cache
+        C->>D: Fetch data
+        D->>C: Return data
+        C->>C: Store data
+        C->>A: Return data
+    end
+```
+
+**Pros:**
+
+- Simplifies application logic as all reads go through the cache 🧠
+- Ensures consistency between cache and database 🔄
+
+**Cons:**
+
+- Increased latency on cache misses due to additional hop through the cache ⏱️
+- Cache becomes a potential single point of failure 🚧
+
+### 3. Write-Around 🔄
+
+In this strategy, write operations go directly to the database but mark cache as dirty. Later cache can determine if the data should be updated. Here's the process:
+
+1. Application receives a write request.
+2. Data is written directly to the database, bypassing the cache.
+3. The cache is not updated immediately (mark dirty).
+4. On subsequent reads, the cache may fetch the updated data from the database if needed.
+
+```mermaid
+graph TD
+    A[Application] -->|Write| D[Database]
+    A -->|Read| C[Cache]
+    C -->|Cache Miss| D
+    D -->|Mark as dirty| C
+    style A fill:#f9f,stroke:#333,stroke-width:4px
+    style C fill:#bbf,stroke:#333,stroke-width:4px
+    style D fill:#bfb,stroke:#333,stroke-width:4px
+```
+
+**Pros:**
+
+- Reduces cache churn for write-heavy workloads 📊
+- Improves write performance by eliminating cache overhead ⚡
+
+**Cons:**
+
+- Higher read latency for recently updated data not yet in cache 🐢
+- Potential for data inconsistency between cache and database if not managed properly 🔀
+
+### 4. Write-Through 🚀
+
+In this strategy, data is first written into the cache, and then immediately updated in the database. Here's the process:
+
+1. Application receives write request.
+2. Data is written to the cache.
+3. The same data is then written to the database.
+4. Write operation is confirmed only after both cache and database are updated.
+
+```mermaid
+sequenceDiagram
+    participant A as Application
+    participant C as Cache
+    participant D as Database
+    A->>C: Write data
+    C->>D: Write data
+    D->>C: Confirm write
+    C->>A: Confirm write
+```
+
+**Pros:**
+
+- Data in cache is always up-to-date, ensuring consistency 🆕
+- Reduced risk of data loss as writes are immediately persisted 🛡️
+
+**Cons:**
+
+- Higher latency for write operations due to synchronous database update ⏳
+- Cache churn for infrequently accessed data, potentially wasting cache space 🔄
+
+### 5. Write-Behind (Write-Back) 🏎️
+
+In this strategy, data is written to the cache immediately, but only **asynchronously updated** in the database. The process works as follows:
+
+1. Application receives write request.
+2. Data is written to the cache.
+3. Write operation is confirmed to the application.
+4. Data is asynchronously written to the database at a later time.
+
+```mermaid
+graph TD
+    A[Application] -->|Write| C[Cache]
+    C -->|Async Write| D[Database]
+    C -->|Confirm| A
+    style A fill:#f9f,stroke:#333,stroke-width:4px
+    style C fill:#bbf,stroke:#333,stroke-width:4px
+    style D fill:#bfb,stroke:#333,stroke-width:4px
+```
+
+**Pros:**
+
+- Low latency for write operations as database update is asynchronous ⚡
+- Efficient for write-heavy workloads, reducing database load 📝
+
+**Cons:**
+
+- Risk of data loss if cache fails before database synchronization 😱
+- Complexity in maintaining data consistency between cache and database 🧩
+
+Choosing the right caching strategy depends on your specific use case, data access patterns, and consistency requirements. Often, a combination of strategies may be used for optimal performance. Consider factors such as read/write ratios, data volatility, and consistency needs when selecting a strategy. 🌈
+
+----
 ## 6. Content Delivery Network (CDN) 🌐
 
 Implementing a CDN to serve static content faster and reduce load on application servers.
