@@ -2,6 +2,237 @@
 
 In this page, we will learn about security features that we put in our architecture like OAuth2.0, encryption, etc.
 
+# Cryptography
+
+Cryptography is the practice and study of techniques for secure communication in the presence of adversaries. It involves encryption (converting plaintext into ciphertext) and decryption (converting ciphertext back to plaintext).
+
+## Types of Encryption
+
+## 1. Symmetric Encryption
+
+In symmetric encryption, the same key is used for both encryption and decryption.
+
+**Advantages:** 
+
+- Fast and less computation is required compared to Asymmetric encryption.
+- Efficient for large amounts of data
+
+**Disadvantages:** 
+
+- Key distribution can be challenging
+
+Common symmetric algorithms:
+
+- AES (Advanced Encryption Standard)
+- DES (Data Encryption Standard)
+- 3DES (Triple DES)
+
+```mermaid
+graph LR
+    A[Plaintext] -->|Encryption using Symmetric key| B[Ciphertext]
+    B -->|Decryption using Symmetric key| C[Plaintext]
+```
+
+### DES (Not recommended)
+
+DES (Data Encryption Standard) is a symmetric-key block cipher that was once widely used but is now considered insecure due to its small key size.
+
+**Key features of DES:**
+
+- Block size: 64 bits
+- Key size: 56 bits (technically 64 bits, but 8 bits are used for parity)
+- Number of rounds: 16
+
+**How DES works:**
+
+1. Initial permutation of the input block
+2. 16 rounds of a Feistel network structure
+3. Final permutation (inverse of the initial permutation)
+
+DES is vulnerable to brute-force attacks due to its small key size. It has been largely replaced by more secure algorithms like AES. However, Triple DES (3DES), which applies DES three times with different keys, is still used in some legacy systems.
+
+### AES
+
+AES (Advanced Encryption Standard) is a symmetric encryption algorithm widely used for secure data transmission. It was established by the U.S. National Institute of Standards and Technology (NIST) in 2001 to replace the older DES algorithm.
+
+**Key features of AES:**
+
+- Block cipher: AES encrypts data in fixed-size blocks of 128 bits
+- Variable key sizes: 128, 192, or 256 bits
+- Multiple rounds of encryption: 10, 12, or 14 rounds depending on key size
+
+**Types of AES based on key size:**
+
+- AES-128: Uses a 128-bit key and 10 rounds of encryption
+- AES-192: Uses a 192-bit key and 12 rounds of encryption
+- AES-256: Uses a 256-bit key and 14 rounds of encryption
+
+#### Algorithm 🔍
+
+The AES algorithm operates on a 4x4 matrix of bytes called the **state array**. Each element in this matrix is a byte (8 bits). 🔢
+
+**Word:** A group of 4 bytes that are processed as a unit. The AES key is divided into words. 🔤
+
+**Round Key:** A key derived from the main key, used in each round of encryption. 🔑
+
+**Key Expansion 🗝️**
+
+The AES key expansion process generates the round keys from the initial cipher key:
+
+```mermaid
+graph LR
+    A[Cipher Key] --> B[Key Expansion]
+    B --> C[Round Key 0]
+    B --> D[Round Key 1]
+    B --> E[...]
+    B --> F[Round Key N]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px
+    style F fill:#bbf,stroke:#333,stroke-width:2px
+```
+
+This process ensures that each round uses a different key, enhancing the security of the encryption. 🛡️
+
+Here's a more detailed look at the AES encryption process: 🔐🧠
+
+```mermaid
+graph TD
+    A[Input Plaintext] --> B[Initial AddRoundKey]
+    B --> C[Start Rounds]
+    C --> D[SubBytes]
+    D --> E[ShiftRows]
+    E --> F[MixColumns]
+    F --> G[AddRoundKey]
+    G -->|Repeat for N-1 rounds| C
+    G --> H[Final Round]
+    H --> I[SubBytes]
+    I --> J[ShiftRows]
+    J --> K[AddRoundKey]
+    K --> L[Ciphertext Output]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style L fill:#bbf,stroke:#333,stroke-width:2px
+```
+
+Let's break down each step: 🧩
+
+1. **Initial AddRoundKey:** The input block is XORed with the initial round key. 🔀
+2. **SubBytes:** Each byte in the state is replaced with a corresponding byte in a fixed 8-bit lookup table (S-box). This provides non-linearity. 🔄
+3. **ShiftRows:** The bytes in each row of the state are cyclically shifted left. The number of places each byte is shifted differs for each row. 👈
+4. **MixColumns:** Each column of the state is multiplied with a fixed polynomial. This step ensures diffusion. 🔢
+5. **AddRoundKey:** The state is combined with the round key using bitwise XOR. 🔑
+
+These steps are repeated for a number of rounds (10 for 128-bit keys, 12 for 192-bit keys, and 14 for 256-bit keys), with the final round skipping the MixColumns step. 🔁
+
+AES's strength lies in its simplicity, speed, and resistance to various cryptographic attacks, making it the go-to choice for secure data encryption in modern systems. 💪🔒
+
+AES is considered highly secure and efficient, making it suitable for a wide range of applications, from securing internet communications to protecting sensitive government information.
+
+## 2. Asymmetric Encryption
+
+Asymmetric encryption uses a pair of keys: a public key for encryption and a private key for decryption.
+
+**Advantages:** 
+
+- Solves key distribution problem, because each user uses a secret (private) key, which is not shared over network.
+- Provide key exchange protocols like Diffie-Hellman.
+- enables digital signatures
+
+**Disadvantages:** 
+
+- Slower than symmetric encryption & computation intensive
+- Not suitable for bulk data.
+
+Common asymmetric algorithms:
+
+- RSA (Rivest-Shamir-Adleman)
+- DSA
+- ECC (Elliptic Curve Cryptography)
+- Diffie-Hellman
+- ECDHE
+
+```mermaid
+graph LR
+    A[Plaintext] -->|Encryption with Public Key| B[Ciphertext]
+    B -->|Decryption with Private Key| C[Plaintext]
+    D[Public Key] --> B
+    E[Private Key] --> C
+```
+
+### Diffie Hellman
+
+The Diffie-Hellman key exchange is a method of securely exchanging cryptographic keys over a public channel. It was one of the first public-key protocols, invented by Whitfield Diffie and Martin Hellman in 1976. Here's how it works:
+
+1. Alice and Bob agree on a large prime number p and a base g (usually a small prime number like 2, 3, or 5).
+2. Alice chooses a secret integer a and computes A = g^a mod p. She sends A to Bob.
+3. Bob chooses a secret integer b and computes B = g^b mod p. He sends B to Alice.
+4. Alice computes the shared secret s = B^a mod p.
+5. Bob computes the same shared secret s = A^b mod p.
+
+Both Alice and Bob now have the same shared secret s, which can be used as a symmetric encryption key.
+
+**How it solves the key distribution problem:**
+
+- No need to share secret keys: The beauty of Diffie-Hellman is that Alice and Bob never need to share their secret numbers (a and b) with each other.
+- Public channel safety: Even if an eavesdropper intercepts all the communications (p, g, A, and B), they cannot easily determine the shared secret s.
+- Perfect forward secrecy: Each session can use a different set of parameters, ensuring that if one session is compromised, past and future sessions remain secure.
+- Scalability: It can be extended to work with multiple parties, making it suitable for group key agreement in various network protocols.
+
+However, it's important to note that while Diffie-Hellman solves the key distribution problem, it doesn't provide authentication. To prevent man-in-the-middle attacks, it's often used in conjunction with digital signatures or other authentication methods.
+
+```mermaid
+sequenceDiagram
+    participant Alice
+    participant Bob
+    Note over Alice,Bob: Agree on prime p and base g
+    Alice->>Bob: A = g^a mod p
+    Bob->>Alice: B = g^b mod p
+    Note over Alice: Computes s = B^a mod p
+    Note over Bob: Computes s = A^b mod p
+    Note over Alice,Bob: Both have shared secret s
+```
+
+This algorithm forms the basis for many secure communication protocols used today, including in SSL/TLS for secure web browsing.
+
+### Digital signature
+
+A digital signature is a cryptographic mechanism used to verify the authenticity and integrity of digital messages or documents. 🔏✍️
+
+Here's how digital signatures work: 🛠️
+
+1. **Key Generation:** The signer creates a pair of keys - a private key (kept secret) and a public key (shared openly). 🔑🔓
+2. **Signing Process:** The signer creates a hash of the message and encrypts it with their private key. This encrypted hash is the digital signature. 
+3. **Attaching the Signature:** The digital signature is attached to the message or document. 📎
+4. **Verification:** The recipient uses the signer's public key to decrypt the signature, revealing the original hash. They also independently hash the received message. 🕵️‍♀️
+5. **Comparison:** If the decrypted hash matches the independently generated hash, the signature is valid, confirming the message's integrity and the signer's identity. ✅🎉
+
+Let's visualize the digital signature process with a diagram:
+
+```mermaid
+sequenceDiagram
+    participant Sender
+    participant Recipient
+    Sender->>Sender: Generate hash of message
+    Sender->>Sender: Encrypt hash with private key
+    Sender->>Recipient: Send message and digital signature
+    Recipient->>Recipient: Generate hash of received message
+    Recipient->>Recipient: Decrypt signature with sender's public key
+    Recipient->>Recipient: Compare decrypted hash with generated hash
+    Note over Recipient: If hashes match, signature is valid
+```
+
+This process ensures the authenticity, integrity, and non-repudiation of the message, making digital signatures a crucial component of secure digital communications. 🔐🌐
+
+Digital signatures provide several benefits:
+
+- **Authentication:** Verifies the identity of the signer. 🆔
+- **Integrity:** Ensures the message hasn't been altered. 🛡️
+- **Non-repudiation:** The signer can't deny signing the document. 🚫🙅‍♂️
+
+Digital signatures are widely used in various applications, including email, software distribution, financial transactions, and legal documents, providing a secure way to conduct business in the digital world. 🌐💼
+
 # OAuth 2.0 🔐
 
 OAuth 2.0 is an authorization framework that enables applications to obtain limited access to user accounts on an HTTP service. 🌐
@@ -22,10 +253,10 @@ OAuth 2.0 is an authorization framework that enables applications to obtain limi
 
 **Example** → Scenario: A third-party email management app wants to access your Gmail inbox.
 
-- Resource Owner 👤: You, the Gmail user
-- Client 📱: The third-party email management app
-- Authorization Server 🏛️: Google's OAuth server
-- Resource Server 💾: Gmail's API
+- Resource Owner : You, the Gmail user
+- Client : The third-party email management app
+- Authorization Server: Google's OAuth server
+- Resource Server: Gmail's API
 
 Flow:
 
