@@ -42,7 +42,7 @@ These systems distribute data and processing across multiple nodes, working toge
 
 # Distributed databases
 
-In distributed systems, handling transactions across multiple nodes presents unique challenges. Two common approaches for managing distributed transactions are the Two-Phase Commit (2PC) and Three-Phase Commit (3PC) protocols. Let's explore these in detail: 🔒
+In distributed systems, handling transactions across multiple nodes presents unique challenges. Three common approaches for managing distributed transactions are the Two-Phase Commit (2PC), Three-Phase Commit (3PC) protocols and SAGA Pattern. Let's explore these in detail: 🔒
 
 ## Two-Phase Commit (2PC) Protocol 🔄🔄
 
@@ -153,3 +153,15 @@ sequenceDiagram
 - Still vulnerable to certain types of failures. ⚠️
 
 Both 2PC and 3PC protocols play crucial roles in maintaining data consistency across distributed systems, with 3PC offering improved reliability at the cost of increased complexity. The choice between them depends on the specific requirements of the system, including factors like performance needs, fault tolerance, and implementation complexity. 🌟🔧
+
+If you don't want to implement 2PC or 3PC protocols you can use SAGA pattern to handle consistency issues in distributed systems, as explained below.
+
+## SAGA Pattern
+
+SAGA breaks down a distributed transaction into a sequence of local transactions, each performed by a single service. If a step fails, the pattern executes compensating transactions to undo the changes made by the preceding steps. This ensures eventual consistency across all services. 🔁
+
+It has two types:
+1. Choreography-based SAGA
+2. Orchestration-based SAGA
+
+Read in more detail here, [Microservices - SAGA Pattern](https://github.com/DS-Meena/Learn-LLD-HLD/tree/main/HLD/Architectural%20Patterns/Microservices#saga-pattern-)

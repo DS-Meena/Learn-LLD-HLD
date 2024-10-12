@@ -56,6 +56,24 @@ graph LR
 
 A VPN creates a secure, encrypted tunnel between a device and a VPN server, routing all internet traffic through this tunnel. It provides privacy, security, and the ability to access geographically restricted content. 🌐🔐
 
+There are two scenarios in which you can use VPN:
+
+1. Accessing external website over internet
+2. Accessing private network (home network) over internet
+
+### Accessing External website
+
+1. You initiate a connection to a website or online service.
+2. The VPN client on your device encrypts your data before it leaves your device.
+3. The encrypted data is then encapsulated in a new packet with a new IP header (your VPN server's IP address). This is called **tunneling**.
+4. This encapsulated, encrypted data travels through a secure VPN tunnel to the VPN server.
+5. The VPN server decrypts your data and sends it to the intended online destination.
+    - At this point the VPN encryption is removed and only the SSL/TLS encryption remains for HTTPS website.
+    - But still, your IP is hidden from website and your data (internet activity) is hidden from your internet service provider.
+6. The website or service responds, sending data back to the VPN server.
+7. The VPN server encrypts this response and sends it back through the secure tunnel to your device.
+8. Your VPN client decrypts the data so you can use it.
+
 ```mermaid
 graph LR
     subgraph User Device
@@ -90,17 +108,11 @@ graph LR
     linkStyle 0,4 stroke:#66f,stroke-width:3px;
 ```
 
-### How does VPN works?
-1. You initiate a connection to a website or online service.
-2. The VPN client on your device encrypts your data before it leaves your device.
-3. The encrypted data is then encapsulated in a new packet with a new IP header (your VPN server's IP address). This is called **tunneling**.
-4. This encapsulated, encrypted data travels through a secure VPN tunnel to the VPN server.
-5. The VPN server decrypts your data and sends it to the intended online destination.
-6. The website or service responds, sending data back to the VPN server.
-7. The VPN server encrypts this response and sends it back through the secure tunnel to your device.
-8. Your VPN client decrypts the data so you can use it.
+Example: Norton VPN
 
-Example: Remote Work VPN
+### Accessing Private network
+
+In this case, we try to access our private network like home or office network from outside via internet. To keep the data safe we access via VPN.
 
 ## Firewall
 
@@ -146,7 +158,7 @@ VPN works on lower layers (transport, network or data layer), while proxy works 
 | **Scope 🌐** | Routes all device traffic | Usually handles specific applications or protocols |
 | **Speed 🚀** | Slower due to encryption overhead | Often faster |
 | **Security 🛡️** | Generally better security and privacy | Less secure than VPNs |
-| **Layer** 🦥 | Works on lower layers of network (transport, network or data layer) | Monitors and controls incoming and outgoing network traffic based on predetermined security rules. It acts as a filter for the data. |
+| **Layer** 🦥 | Works on lower layers of network (transport, network or data layer) | Works on application layer of network |
 
 ### Reverse Proxy vs. Load Balancer
 
