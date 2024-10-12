@@ -157,8 +157,6 @@ Common asymmetric algorithms:
 graph LR
     A[Plaintext] -->|Encryption with Public Key| B[Ciphertext]
     B -->|Decryption with Private Key| C[Plaintext]
-    D[Public Key] --> B
-    E[Private Key] --> C
 ```
 
 ### Diffie Hellman
@@ -224,6 +222,15 @@ sequenceDiagram
 ```
 
 This process ensures the authenticity, integrity, and non-repudiation of the message, making digital signatures a crucial component of secure digital communications. 🔐🌐
+
+
+#### Hash Function in Digital Signatures:
+
+A cryptographic hash function is a crucial component of the digital signature process. 🧮 It's agreed upon and known to both the signer and verifier beforehand. 🤝
+
+Example -> Common hash functions include SHA-256, SHA-3, and BLAKE2. 🔢
+
+By using a standardized, secure hash function, both parties can independently compute the same hash for a given message, which is essential for the signature verification process. 🔍✅
 
 Digital signatures provide several benefits:
 
