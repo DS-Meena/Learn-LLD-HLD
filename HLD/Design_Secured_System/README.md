@@ -91,6 +91,11 @@ Let's break down the request and response examples for the Authorization Code Gr
     	"redirect_uris": {"instagram.com", "instagram1.com", "instagram2.com"}
     }
     ```
+
+    Query parameters:
+    
+    - **client_id**: Your application's unique identifier
+    - **redirect_uri or callback**: Where the auth server should send the user after authorization
     
     Response (`step 2`): Client gets client_id and client_secret, which are used for authentication of the client.
     
@@ -122,8 +127,6 @@ Let's break down the request and response examples for the Authorization Code Gr
     Query parameters:
     
     - **response_type=code**: Indicates that we're using the Authorization Code flow
-    - **client_id**: Your application's unique identifier
-    - **redirect_uri**: Where the auth server should send the user after authorization
     - **scope**: What permissions your app is requesting
     - **state**: A random string to prevent CSRF attacks
     
@@ -159,7 +162,7 @@ Let's break down the request and response examples for the Authorization Code Gr
     
     - **grant_type=authorization_code**: Specifies we're using the Authorization Code flow
     - **code**: The authorization code received in step 2
-    - **redirect_uri**: Must match the one used in step 1
+    - **redirect_uri or callback**: Must match the one used in step 1
     - **client_id** and **client_secret**: Your app's credentials
     
     Response (`step 8`): The authorization server responds with an access token.
@@ -196,7 +199,11 @@ Let's break down the request and response examples for the Authorization Code Gr
 
 #### CSRF Attack
 
-The attacker gives his unused auth token in `step 6`, so when user uses this attacker's auth token, he get attackers access token. With this, he will be logged into attackers account, instead of his own.
+The attacker gives his unused auth token in `step 6`, so when user uses this attacker's auth token, he get attackers access token. With this, he will get attackers resource values and user might be on banking site and he could send the money to attacker's account.
+
+To prevent this **state value** is used while asking for Authorization code, so that client can validate if this auth code is coming from intended authorization server.
+
+A more generic CSRF attack is given below.
 
 A CSRF attack occurs when a malicious website tricks a user's browser into making an unwanted request to a trusted website where the user is already authenticated. This can lead to unauthorized actions being performed on the user's behalf.
 
