@@ -712,3 +712,186 @@ This flow is typically used for server-to-server authentication where no user in
 - No user involvement, only for trusted clients 🤖
 
 Understanding these flows and choosing the appropriate grant type is crucial for implementing secure and efficient OAuth 2.0 authentication in your system design. 🏗️🔒
+
+# JSON Web Tokens (JWT) 🔐
+
+JSON Web Tokens (JWT) are a compact and self-contained way of securely transmitting information between parties as a JSON object. 📜✉️
+
+The main purposes of JWT tokens are:
+
+- **Authentication**: JWTs can be used to verify the identity of a user after they've logged in
+- **Authorization**: JWTs can contain claims about what resources or actions a user is allowed to access
+- **Information Exchange**: JWTs can securely transmit information between parties as a JSON object
+- **Stateless Sessions**: JWTs allow for stateless authentication, reducing the need for server-side session storage
+- **Single Sign-On (SSO)**: JWTs facilitate single sign-on across multiple systems or domains (using single set of login credentials)
+
+These tokens provide a secure, compact, and self-contained method for managing user sessions and permissions in modern web applications. 🔒🔑
+
+## Structure of JWT 🏗️
+
+A JWT consists of three parts separated by dots (.): Header, Payload, and Signature. 🧩
+
+```
+header.payload.signature
+```
+
+- **Header 📋:** Contains metadata about the token (like the type of token and the hashing algorithm used)
+- **Payload 📦:** Contains claims (statements about the user and additional metadata)
+- **Signature 🖋️:** Ensures the token hasn't been altered
+
+Let's break down the structure of a JWT in more detail:
+
+### Header 📋
+
+The header typically consists of two parts:
+
+- **typ (Type)**: Specifies that the token is a JWT
+- **alg (Algorithm)**: Indicates the hashing algorithm used, such as HMAC SHA256 or RSA
+
+Example header:
+
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+### Payload 📦
+
+The payload contains claims. Claims are statements about the user and additional metadata. Some common claims are:
+
+- **iss (Issuer)**: Who issued the token
+- **sub (Subject)**: The subject of the token (often the user ID)
+- **exp (Expiration Time)**: When the token expires
+- **iat (Issued At)**: When the token was issued
+- **aud (Audience)**: The intended recipient of the token
+
+Example payload:
+
+```json
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022,
+  "exp": 1516242622
+}
+```
+
+### Signature 🖋️
+
+The signature is created by combining the encoded header, encoded payload, and a secret key. It's used to verify that the token hasn't been altered. The signature is created using the algorithm specified in the header.
+
+Pseudo-code for creating the signature:
+
+```jsx
+HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  secret
+)
+```
+
+Note the signature is not encrypted after applying hash. The final JWT is the combination of these three parts, each Base64Url encoded and separated by dots:
+
+```
+encodedHeader.encodedPayload.signature
+```
+
+## How JWT Works 🔄
+
+Here's a step-by-step explanation of how JWT works:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant JWT
+
+    Client->>Server: Login with credentials
+    Server->>JWT: Generate JWT
+    JWT-->>Server: Return JWT
+    Server-->>Client: Send JWT
+    Note over Client: Store JWT
+    Client->>Server: Request with JWT in header
+    Server->>JWT: Verify JWT
+    JWT-->>Server: Validation result
+    alt is valid
+        Server-->>Client: Send protected resource
+    else is invalid
+        Server-->>Client: Send error response
+    end
+```
+
+1. User logs in with their credentials 🔑
+2. Server verifies the credentials and generates a JWT 🏭
+3. Server sends the JWT back to the client 📤
+4. Client stores the JWT (usually in local storage) 💾
+5. Client sends the JWT in the Authorization header for subsequent requests 🚀
+6. Server verifies the JWT signature for each request 🕵️
+
+    1. Decoding the JWT header and payload
+    2. Recreating the signature using the appropriate key (secret key or public key)
+    3. Comparing the recreated signature with the one in the token
+
+7. If valid, the server processes the request; if not, it returns an error ✅❌
+
+### Advantages of JWT 🌟
+
+- **Stateless**: No need to store session information on the server 🧘‍♂️
+- **Scalability**: Easy to scale across different domains and services 📈
+- **Security**: Can be encrypted and signed for integrity 🛡️
+- **Efficiency**: Compact size for quick transmission 🚀
+
+### Security Considerations 🔒
+
+- Store JWTs securely (e.g., HttpOnly cookies) 🍪
+- Use HTTPS to prevent token interception 🔐
+- Set appropriate expiration times ⏳
+- Implement token refresh mechanisms 🔄
+- Validate and sanitize all user inputs 🧹
+
+JWTs provide a robust and efficient method for authentication and information exchange in modern web applications, especially in microservices architectures. 🌐🔧
+
+## Challenges with JWT Tokens 🚧
+
+While JWT tokens offer many advantages, they also come with some challenges:
+
+- **Token size:** JWTs can become large, especially with many claims, increasing bandwidth usage 📦
+- **Statelessness:** Once issued, tokens can't be easily revoked before expiration ⏳
+- **Secret key management:** Compromised secret keys can lead to security breaches 🔑
+- **Token storage:** Secure client-side storage can be challenging, especially in browsers 💾
+- **Lack of visibility:** Server can't track active sessions without additional mechanisms 👁️
+- **Payload limitations:** Sensitive data shouldn't be stored in the payload as it's only encoded, not encrypted 🔒
+- **Clock skew:** Time-based claims can cause issues if server and client clocks are not synchronized ⏰
+
+Addressing these challenges requires careful implementation and additional security measures. 🛠️
+
+JWS (JSON Web Signature) and JWE (JSON Web Encryption) are two **important extensions** of the JWT standard:
+
+### JWS (JSON Web Signature) 🖋️
+
+JWS is a way to digitally sign or create a MAC (Message Authentication Code) of content. It provides integrity protection for JWT claims. The payload in a JWS can be any content, not just JWT claims.
+
+### JWE (JSON Web Encryption) 🔒
+
+JWE is a way to encrypt the content of a JWT. It provides confidentiality protection for JWT claims. JWE allows sensitive information to be included in the JWT payload without risk of unauthorized access.
+
+Both JWS and JWE enhance the security of JWTs, with JWS focusing on integrity and authenticity, while JWE focuses on confidentiality. They can be used separately or together, depending on the security requirements of the application. 🛡️
+
+## Access token vs JWT
+
+While JWT and OAuth 2.0 access tokens are both used for authentication and authorization, they serve different purposes and have distinct characteristics:
+
+- **JWT (JSON Web Tokens):**
+    - Self-contained: Contains claims about the user and can be verified independently
+    - Stateless: The server doesn't need to store session information
+    - Can be used for authentication and authorization
+    - Often used in single sign-on (SSO) scenarios
+- **OAuth 2.0 Access Tokens:**
+    - Opaque: The contents are not meant to be read by the client
+    - Can be revoked by the authorization server
+    - Typically used for authorization, not authentication
+    - Often used to grant access to specific resources or APIs
+
+While JWTs can be used in OAuth 2.0 flows (e.g., as ID tokens in OpenID Connect), they are not the same as OAuth 2.0 access tokens. JWTs are more commonly used for authentication, while OAuth 2.0 access tokens are primarily for authorization. The choice between them depends on the specific security requirements and architecture of your application. 🔒🔑
