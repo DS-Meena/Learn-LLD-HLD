@@ -183,7 +183,7 @@ Each algorithm has its strengths and is suitable for different scenarios. Static
 
 ## 4. Database Replication 🔄
 
-To improve database performance and reliability, we implement database replication.
+To improve database performance and reliability, we implement database replication. Data is replicated among different nodes (each node represent a different machine), a group of such nodes is known as **cluster**.
 
 ![Database replication](images/image-9.png)
 
@@ -475,7 +475,7 @@ In summary, CDNs are a crucial component of modern web infrastructure, enhancing
 
 ## 7. Multiple Data Centers 🏢🏢
 
-Expanding to multiple data centers for improved availability and disaster recovery. Traffic is distributed among different centers based on geographical areas.
+Expanding to multiple data centers for improved availability and disaster recovery. Data is replicated among different data centers, data ceneters can be thought of as node clusters separated by vast geographical distance. Traffic is distributed among different centers based on geographical areas.
 
 ![Multiple Data centers](images/image-5.png)
 

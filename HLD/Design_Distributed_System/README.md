@@ -141,6 +141,18 @@ sequenceDiagram
 - The coordinator sends a DoCommit message to all participants. 🏁
 - Participants acknowledge the commit. ✅
 
+3PC uses following methods to reduce the blocking call (uncertainity window):
+1. Timeouts
+
+    3PC uses timeouts at each phase. If a participant doesn't receive a message within a specified time, it can make a decision to abort, reducing the chances of indefinite blocking.
+
+2. State Transitions
+
+    The protocol defines clear state transitions for participants, allowing them to make autonomous decisions in case of coordinator failure:
+
+    - If a participant is in the initial state and times out, it can safely abort.
+    - If a participant has voted "Yes" and received a "Prepare to Commit" message, it can commit even if it doesn't receive the final "Commit" message.
+
 ### Advantages 👍
 
 - Non-blocking: Resolves the blocking problem of 2PC. 🚫
