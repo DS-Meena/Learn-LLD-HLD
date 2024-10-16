@@ -414,4 +414,7 @@ graph TB
     style LB1,LB2,LB3,LB4 fill:#34a853,stroke:#333,stroke-width:2px
 ```
 
+Until Github support latest mermaid syntax, use below image as reference.
+![alt text](image-1.png)
+
 A region can have multiple availability zone. Each availability zone have multiple load balancers according to number of microservices.
