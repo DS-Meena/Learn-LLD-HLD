@@ -418,3 +418,105 @@ Until Github support latest mermaid syntax, use below image as reference.
 ![alt text](image-1.png)
 
 A region can have multiple availability zone. Each availability zone have multiple load balancers according to number of microservices.
+
+# How two microservices communicate with each other 
+
+## Without Service Mesh Architecture 🏗️
+
+When microservices communicate without a service mesh, they need to implement various capabilities themselves:
+
+**1. Service Discovery 🔍:** 
+
+If one microservice wants to communicate with another, then it needs its IP address and port number.  Services use tools like Consul or Eureka to register and discover other services.
+
+**2. Load Balancing ⚖️**
+
+Client side load balancing is also required to equally distribute traffic from one service to another. Implemented using client-side load balancing libraries or through a separate load balancer.
+
+**3. Authorization 🔐**
+
+Each service must implement its own authorization logic or integrate with an external auth service.
+
+### 4. Circuit Breaker 🔌 
+
+Circuit breaker is a design pattern used in distributed systems to prevent cascading failures. It works by **temporarily disabling calls** to a failing service, allowing it time to recover. Key aspects include:
+
+- **Failure detection**: Monitors for repeated failures in service calls
+- **Tripping**: Switches to an open state after a threshold of failures, rejecting further calls
+- **Fallback**: Provides alternative responses or graceful degradation when the circuit is open
+- **Reset**: Allows periodic attempts to close the circuit and resume normal operation
+
+This pattern improves system resilience and prevents overloading already stressed services.
+
+Libraries like Hystrix are used to implement circuit breaking logic within each service.
+
+**5. Retry Mechanism 🔁**
+
+Custom retry logic is implemented within each service or using libraries.
+
+### 6. Deployment Strategy 🚀
+
+Deployment strategies are methods used to roll out new versions of software applications with minimal downtime and risk. Here are some common deployment strategies:
+
+- **Canary Deployment 🐤:** A small subset of users or servers receive the new version while the majority continue with the old version. This allows for real-world testing and gradual rollout.
+
+- **Blue-Green Deployment 🔵🟢:** Two identical production environments (blue and green) are maintained. New versions are deployed to the inactive environment, then traffic is switched over once testing is complete.
+
+- **Rolling Update 🔄:** The new version is gradually rolled out to a subset of nodes in the production environment, replacing the old version incrementally.
+
+- **A/B Testing 🆎:** Two versions run simultaneously, with users randomly assigned to each. This allows for comparing performance and user experience between versions.
+
+- **Shadow Deployment 👥:** The new version receives real-world traffic in parallel with the old version, but its responses are discarded. This allows for testing under real conditions without affecting users.
+
+- **Feature Toggles 🔛:** New features are deployed but kept disabled, then gradually enabled for different user groups or environments.
+
+Each strategy has its own benefits and use cases, allowing teams to choose the most appropriate method based on their specific requirements and risk tolerance. Managed through CI/CD pipelines and orchestration tools like Kubernetes.
+
+### 7. Telemetry 📊:
+
+Telemetry refers to the **automated process of collecting**, transmitting, and measuring data from remote or inaccessible sources. In the context of microservices and distributed systems, telemetry encompasses:
+
+- **Logging**: Recording events and errors for debugging and auditing purposes
+- **Metrics**: Quantitative measurements of system performance and behavior
+- **Tracing**: Tracking the flow of requests through multiple services
+- **Health monitoring**: Checking the status and availability of services
+
+Telemetry data is crucial for understanding system behavior, troubleshooting issues, and optimizing performance in complex distributed environments.
+
+Services implement their own logging, tracing, and monitoring, often using different tools.
+
+![alt text](<Screenshot 2024-10-16 100804.png>)
+
+*Fig: Inter-microservices communication [Credit](https://www.youtube.com/watch?v=eIxdHepOeHw&list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7&index=30)*
+
+This approach can lead to code duplication and increased complexity in each service.
+
+## With Service Mesh Architecture 🕸️
+
+A service mesh simplifies microservice communication by offloading these capabilities to a **dedicated infrastructure layer**:
+
+- **Sidecar Proxy 🛵:** Deployed alongside each service instance, handling network communication.
+- **Data Plane 🛣️:** Comprises all sidecar proxies, managing actual traffic between services.
+- **Control Plane 🎛️:** Configures and manages the data plane, providing centralized control.
+
+Example using Istio service mesh:
+
+![alt text](image-3.png)
+
+*Fig: Service mesh architecture [Credit](https://www.infracloud.io/blogs/service-mesh-101/)*
+
+
+Benefits of using a service mesh:
+
+- Centralized management of service-to-service communication 🎯
+- Consistent implementation of cross-cutting concerns 🔄
+- Improved observability and traffic control 👀
+- Easier implementation of security policies 🔒
+
+While service meshes add complexity to the overall system, they significantly simplify individual service development and management in large, complex microservice architectures. 🚀
+
+### **Popular Service Mesh Implementations:**
+
+- **Istio**: An open-source service mesh that integrates well with Kubernetes3.
+- **Linkerd**: Another open-source option known for its simplicity and performance2.
+- **Consul**: Provides service mesh capabilities along with service discovery and configuration2.
