@@ -220,9 +220,9 @@ Let's talk about the failure scenarios, to understand it's fault tolerance.
 
 Introducing a caching layer to reduce database load and improve response times.
 
- Caching 🚀 is the process of storing frequently accessed data in a temporary storage location, such as a **cache**, to reduce the time and resources needed to retrieve it from its original source. This improves system performance and responsiveness, especially for data that's frequently accessed or requires significant processing. 💾
+Caching 🚀 is the process of storing frequently accessed data in a temporary storage location, such as a **cache**, to reduce the time and resources needed to retrieve it from its original source. This improves system performance and responsiveness, especially for data that's frequently accessed or requires significant processing. 💾
 
-Caching 🔄 can be implemented at various system levels, including application, web server, and **database layers**. It can store diverse data types like static files, database queries, and API responses. Caching is particularly useful for **expensive database operations**, acting as a buffer before accessing the database. 🗃️
+Caching 🔄 can be implemented at **various system levels**, including application (API gateway), web server, and database layers. It can store diverse data types like static files, database queries, and API responses. Caching is particularly useful for **expensive database operations**, acting as a buffer before accessing the database. 🗃️
 
 ![Cache](images/image-8.png)
 
@@ -242,7 +242,7 @@ Example: Redis 💡, an in-memory data structure store, is widely used as a data
 
 ## Distributed Caching 🚀
 
-Distributed caching is a technique used in distributed systems to store and manage frequently accessed data across multiple cache servers. It helps improve application performance, reduce database load, and enhance scalability. 🌟
+Distributed caching is a technique used in distributed systems to store and manage frequently accessed data **across multiple cache servers**. It helps improve application performance, reduce database load, and enhance scalability. 🌟
 
 ### Why Use Distributed Caching? 🤔
 
@@ -252,6 +252,13 @@ Distributed caching is a technique used in distributed systems to store and mana
 - High Availability: Multiple cache nodes ensure continued operation if one fails 🛡️
 
 ### Caching Strategies 📚
+
+Cache strategies define how data is read from and written to the cache in relation to the underlying data store, regardless of the number of cache nodes.
+
+Cache strategies are used to:
+- Optimize read and write operations
+- Manage data consistency between cache and main data store
+- Balance performance and data integrity
 
 ### 1. Cache-Aside (Lazy Loading) 🐢
 

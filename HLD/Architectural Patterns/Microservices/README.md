@@ -183,3 +183,235 @@ In a CQRS pattern:
 - Read Model: A separate read-optimized database combines data from both services, updated asynchronously. This allows for efficient querying of order status along with current stock levels. 📚
 
 This approach allows for efficient order processing and inventory management while providing a denormalized view for complex queries across both domains. 🎯
+
+# API Gateways
+
+An API Gateway is a server that acts as an API front-end, receiving API requests, enforcing throttling and security policies, passing requests to the back-end service and then passing the response back to the requester. It is a critical component in microservices architecture.
+
+```mermaid
+graph TD
+    C[Client] --> AG[API Gateway]
+    AG --> A[Authentication Service]
+    AG --> B[Service A]
+    AG --> D[Service B]
+    AG --> E[Service C]
+    
+    subgraph "Microservices"
+    A
+    B
+    D
+    E
+    end
+    
+    AG --> CM[Cache]
+    AG --> AM[Analytics]
+    
+    style AG fill:#f78f,stroke:#333,stroke-width:4px
+```
+
+API gateways helps in following cases:
+
+- Simplify client-side development
+- Improve security
+- Enhance performance
+- Provide centralized management
+- Enable API versioning
+
+## Features of API Gateways 🚀
+
+### 🛣️ Request routing
+
+Request routing is a crucial feature of API Gateways that directs incoming API requests to the appropriate microservices based on predefined rules. This allows for efficient management of complex microservices architectures. Here's an example of how request routing might work:
+
+Let's say we have an e-commerce application with the following microservices:
+
+- Products Service: Handles product information
+- Orders Service: Manages order processing
+- Users Service: Handles user accounts and authentication
+
+The API Gateway might route requests as follows:
+
+- GET /products/* → Products Service
+- POST /orders/* → Orders Service
+- GET /users/* → Users Service
+
+For example:
+
+- https://api.example.com/products/1234 → routed to Products Service
+- https://api.example.com/orders/create → routed to Orders Service
+- https://api.example.com/users/profile → routed to Users Service
+
+This routing is transparent to the client, which only needs to know the main API endpoint. The API Gateway handles the complexity of directing requests to the appropriate microservices.
+
+```mermaid
+graph LR
+    A[Client] --> B[API Gateway]
+    B --> C[Service A]
+    B --> D[Service B]
+    B --> E[Service C]
+```
+
+### 🔐 Authentication and security
+
+Verifies user identity and applies security policies before forwarding requests.
+
+Example -> It can authenticate the access token with Auth Service before routing it to the application.
+
+```mermaid
+sequenceDiagram
+    Client->>API Gateway: Request
+    API Gateway->>Auth Service: Validate Token
+    Auth Service-->>API Gateway: Token Valid
+    API Gateway->>Microservice: Authenticated Request
+```
+
+### 🚦 Rate limiting
+
+Controls the number of requests a client can make in a given timeframe to prevent overload. Rate limiting algorithms can be used here.
+
+```mermaid
+graph TD
+    A[Client] --> B[API Gateway]
+    B --> C{Rate Limit Check}
+    C -->|Within Limit| D[Process Request]
+    C -->|Exceeded| E[Reject Request]
+```
+
+### API Throttling
+
+Throttling is a technique used to control the rate at which requests are processed or resources are consumed. It's similar to rate limiting but often refers to slowing down the processing of requests rather than outright rejecting them. Here's how throttling works:
+
+- 🐢 Slows down processing: Instead of rejecting requests, it may delay their processing to maintain a steady rate
+- ⏱️ Time-based: Often implemented with a "leaky bucket" algorithm, allowing a certain number of requests per unit of time
+- 🔄 **Queue management**: May use a queue to hold requests that exceed the current processing capacity
+- 🎚️ Adaptive: Can dynamically adjust based on server load or other factors
+
+Throttling helps prevent system overload while still allowing all requests to be processed eventually, albeit at a controlled pace.
+
+This helps in preventing thundering herd effect.
+
+### 🔍 Service discovery
+
+Automatically detects and registers available microservices for seamless scaling and management.
+
+```mermaid
+graph TD
+    A[API Gateway] --> B[Service Registry]
+    B --> C[Service A]
+    B --> D[Service B]
+    B --> E[Service C]
+    F[New Service] -->|Register| B
+```
+
+### 💾 Caching
+
+Stores frequently accessed data to reduce backend load and improve response times. This cache will be applied at an application layer.
+
+```mermaid
+sequenceDiagram
+    Client->>API Gateway: Request Data
+    API Gateway->>Cache: Check Cache
+    alt Data in Cache
+        Cache-->>API Gateway: Return Cached Data
+    else Data not in Cache
+        API Gateway->>Microservice: Fetch Data
+        Microservice-->>API Gateway: Return Data
+        API Gateway->>Cache: Store in Cache
+    end
+    API Gateway->>Client: Return Data
+```
+
+- 📊 Monitoring and analytics
+
+    Collects and analyzes API usage data for insights and performance optimization.
+
+
+- 🔄 Protocol translation
+    
+    Converts between different protocols to ensure compatibility between client and server.
+    
+    ```mermaid
+    graph LR
+        A[Client] -->|REST| B[API Gateway]
+        B -->|gRPC| C[Microservice A]
+        B -->|SOAP| D[Microservice B]
+    ```
+    
+- IP based blocking can be implemented.
+
+## API Gateways vs Load Balancers:
+
+While both API gateways and load balancers distribute traffic, they serve different purposes. 
+
+Generally Load Balancer simply distribute the traffic to the multiple instances of a microservice based on various factors like health, traffic load etc. While API gateways distributes traffic among different services (can be passed through a Load balancer) based on defined routing rules.
+
+| API Gateway | Load Balancer |
+| --- | --- |
+| Operates at application layer (L7) | Typically operates at network/transport layer (L4) |
+| Provides complex routing based on content | Distributes traffic based on server health and load |
+| Offers authentication, rate limiting, caching | Focuses on distributing load evenly |
+| Can transform and aggregate requests | Does not modify request content |
+
+```mermaid
+graph TD
+    C[Client] --> AG[API Gateway]
+    AG --> LB1[Load Balancer 1]
+    AG --> LB2[Load Balancer 2]
+    LB1 --> S1[Service 1 Instance 1]
+    LB1 --> S2[Service 1 Instance 2]
+    LB2 --> S3[Service 2 Instance 1]
+    LB2 --> S4[Service 2 Instance 2]
+    
+    style AG fill:#f59f,stroke:#333,stroke-width:4px
+    style LB1 fill:#76f,stroke:#333,stroke-width:2px
+    style LB2 fill:#76f,stroke:#333,stroke-width:2px
+```
+
+In this setup, the API Gateway handles high-level routing and processing, while Load Balancers distribute traffic among multiple instances of each service.
+
+### How it maintains Availability:
+
+To ensure high availability and prevent the API Gateway from becoming a single point of failure, we can implement a distributed architecture across multiple Availability Zones and Regions. 
+
+```mermaid
+graph TB
+    C1[Client] --> R1[Route 53 DNS]
+    R1 --> AG1[API Gateway Region 1]
+    R1 --> AG2[API Gateway Region 2]
+    
+    subgraph "Region 1"
+        AG1 --> LB1[Load Balancer 1]
+        AG1 --> LB2[Load Balancer 2]
+        AG1 --> LB5[Load Balancer 1]
+        AG1 --> LB6[Load Balancer 2]
+        subgraph "Availability Zone 1"
+            LB5 --> MS1A@{ shape: procs, label: "Microservice A"}
+            LB6 --> MS1B@{ shape: procs, label: "Microservice B"}
+        end
+        subgraph "Availability Zone 2"
+            LB1 --> MS2A@{ shape: procs, label: "Microservice A"}
+            LB2 --> MS2B@{ shape: procs, label: "Microservice B"}
+            
+        end
+    end
+    subgraph "Region 2"
+        AG2 --> LB3[Load Balancer 3]
+        AG2 --> LB4[Load Balancer 4]
+        AG2 --> LB7[Load Balancer 3]
+        AG2 --> LB8[Load Balancer 4]
+        subgraph "Availability Zone 3"
+            LB3 --> MS3A@{ shape: procs, label: "Microservice A"}
+            LB8 --> MS3B@{ shape: procs, label: "Microservice B"}
+        end
+        subgraph "Availability Zone 4"
+            LB7 --> MS4A@{ shape: procs, label: "Microservice A"}
+            LB4 --> MS4B@{ shape: procs, label: "Microservice B"}
+        end
+    end
+    
+    style R1 fill:#ff9900,stroke:#333,stroke-width:2px
+    style AG1,AG2 fill:#ff9900,stroke:#333,stroke-width:2px
+    style LB1,LB2,LB3,LB4 fill:#34a853,stroke:#333,stroke-width:2px
+```
+
+A region can have multiple availability zone. Each availability zone have multiple load balancers according to number of microservices.
