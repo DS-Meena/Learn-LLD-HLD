@@ -77,3 +77,8 @@ When we show 5 videos, users watch 1 (1/5)
 Total Outgoing = 60 MB/sec + 2.5 GB/sec + 1 GB/sec ~= 3.5 GB/sec  
 
 This is enough for a rough capacity estimation of Twitter. 
+
+## References
+
+1. [Concept && Coding](https://www.youtube.com/@ConceptandCoding) - really good explanations available there. Must visit. 😊
+2. [After Academy](https://afteracademy.com/tech-interview/)
